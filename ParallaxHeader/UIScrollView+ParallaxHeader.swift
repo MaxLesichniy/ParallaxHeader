@@ -16,7 +16,7 @@ import ObjectiveC.runtime
 extension UIScrollView {
     
     private struct AssociatedKeys {
-        static var descriptiveName = "AssociatedKeys.DescriptiveName.parallaxHeader"
+        static var parallaxHeader = "AssociatedKeys.parallaxHeader"
     }
     
     /**
@@ -24,24 +24,16 @@ extension UIScrollView {
      */
     public var parallaxHeader: ParallaxHeader {
         get {
-            if let header = objc_getAssociatedObject(
-                self,
-                &AssociatedKeys.descriptiveName
-                ) as? ParallaxHeader {
+            if let header = objc_getAssociatedObject(self, &AssociatedKeys.parallaxHeader) as? ParallaxHeader {
                 return header
             }
             let header = ParallaxHeader()
             self.parallaxHeader = header
             return header
         }
-        set(parallaxHeader) {
-            parallaxHeader.scrollView = self
-            objc_setAssociatedObject(
-                self,
-                &AssociatedKeys.descriptiveName,
-                parallaxHeader,
-                .OBJC_ASSOCIATION_RETAIN_NONATOMIC
-            )
+        set {
+            newValue.scrollView = self
+            objc_setAssociatedObject(self, &AssociatedKeys.parallaxHeader, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
