@@ -16,11 +16,11 @@ private let parallaxHeaderKVOContext = UnsafeMutableRawPointer.allocate(
     alignment: 1
 )
 
-class ParallaxView: UIView {
+public class ParallaxView: UIView {
     
     fileprivate weak var parent: ParallaxHeader!
     
-    override func willMove(toSuperview newSuperview: UIView?) {
+    public override func willMove(toSuperview newSuperview: UIView?) {
         guard let scrollView = self.superview as? UIScrollView else { return }
         scrollView.removeObserver(
             self.parent,
@@ -34,7 +34,7 @@ class ParallaxView: UIView {
 //        )
     }
     
-    override func didMoveToSuperview() {
+    public override func didMoveToSuperview() {
         guard let scrollView = self.superview as? UIScrollView else { return }
         scrollView.addObserver(
             self.parent,
@@ -78,7 +78,7 @@ public class ParallaxHeader: NSObject {
     /**
      The content view on top of the UIScrollView's content.
      */
-    lazy var contentView: ParallaxView = { [unowned self] in
+    public internal(set) lazy var contentView: ParallaxView = { [unowned self] in
         let contentView = ParallaxView()
         contentView.parent = self
         contentView.clipsToBounds = true
@@ -95,7 +95,7 @@ public class ParallaxHeader: NSObject {
             
             if let view = view {
                 view.translatesAutoresizingMaskIntoConstraints = false
-                contentView.addSubview(view)
+                contentView.insertSubview(view, at: 0)
                 updateConstraints()
             }
         }
@@ -161,13 +161,16 @@ public class ParallaxHeader: NSObject {
     }
     
 //    fileprivate weak var viewHeightConstraint: NSLayoutConstraint?
+    fileprivate var contentViewConstraints: [NSLayoutConstraint] = []
     
     // MARK: - Constraints
     
     private func updateConstraints() {
-        contentView.constraints.forEach {
+        contentViewConstraints.forEach {
             contentView.removeConstraint($0)
         }
+        
+        contentViewConstraints.removeAll()
         
         switch mode {
         case .fill:
@@ -185,6 +188,8 @@ public class ParallaxHeader: NSObject {
         case .bottomFill:
             setBottomFillModeConstraints()
         }
+        
+        contentView.addConstraints(contentViewConstraints)
     }
     
     private func setFillModeConstraints() {
@@ -194,21 +199,18 @@ public class ParallaxHeader: NSObject {
             "v" : view
         ]
         
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "H:|[v]|",
-                options: [],
-                metrics: nil,
-                views: binding
-            )
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|[v]|",
+            options: [],
+            metrics: nil,
+            views: binding
         )
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "V:|[v]|",
-                options: [],
-                metrics: nil,
-                views: binding
-            )
+        
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "V:|[v]|",
+            options: [],
+            metrics: nil,
+            views: binding
         )
     }
     
@@ -223,15 +225,12 @@ public class ParallaxHeader: NSObject {
             "height" : height
         ]
         
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
-            )
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
         )
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "V:|[v(==height)]", options: [], metrics: metrics, views: binding
-            )
+        
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "V:|[v(==height)]", options: [], metrics: metrics, views: binding
         )
     }
     
@@ -247,16 +246,13 @@ public class ParallaxHeader: NSObject {
             "height" : height
         ] as [String : Any]
         
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
-            )
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
         )
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "V:|[v(>=height)]-0.0@highPriority-|",
-                options: [], metrics: metrics, views: binding
-            )
+        
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "V:|[v(>=height)]-0.0@highPriority-|",
+            options: [], metrics: metrics, views: binding
         )
     }
     
@@ -267,22 +263,16 @@ public class ParallaxHeader: NSObject {
             "v" : view
         ]
         
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
-            )
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
         )
         
-        contentView.addConstraint(
+        contentViewConstraints += [
             NSLayoutConstraint(item: view, attribute: .centerY, relatedBy: .equal,
-                toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0
-            )
-        )
-        contentView.addConstraint(
+                               toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0),
             NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal,
-                toItem: contentView, attribute: .centerX, multiplier: 1, constant: 0
-            )
-        )
+                               toItem: contentView, attribute: .centerX, multiplier: 1, constant: 0)
+        ]
     }
     
     private func setCenterFillModeConstraints() {
@@ -297,29 +287,23 @@ public class ParallaxHeader: NSObject {
             "height" : height
         ] as [String : Any]
         
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
-            )
-        )
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "V:|-0@highPriority-[v(>=height)]-0@highPriority-|",
-                options: [], metrics: metrics, views: binding
-            )
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
         )
         
-        contentView.addConstraint(
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "V:|-0@highPriority-[v(>=height)]-0@highPriority-|",
+            options: [], metrics: metrics, views: binding
+        )
+        
+        contentViewConstraints += [
             NSLayoutConstraint(
                 item: view, attribute: .centerY, relatedBy: .equal,
-                toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0
-            )
-        )
-        contentView.addConstraint(
-            NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal,
-                toItem: contentView, attribute: .centerX, multiplier: 1, constant: 0
-            )
-        )
+                toItem: contentView, attribute: .centerY, multiplier: 1, constant: 0),
+            NSLayoutConstraint(
+                item: view, attribute: .centerX, relatedBy: .equal,
+                toItem: contentView, attribute: .centerX, multiplier: 1, constant: 0)
+        ]
     }
     
     private func setBottomModeConstraints() {
@@ -333,15 +317,12 @@ public class ParallaxHeader: NSObject {
             "height" : height
         ]
         
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
-            )
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|[v]|", options: [], metrics: nil, views: binding
         )
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "V:[v(==height)]|", options: [], metrics: metrics, views: binding
-            )
+        
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "V:[v(==height)]|", options: [], metrics: metrics, views: binding
         )
     }
     
@@ -357,17 +338,14 @@ public class ParallaxHeader: NSObject {
             "height" : height
         ] as [String : Any]
         
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "H:|[v]|",
-                options: [], metrics: nil, views: binding
-            )
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|[v]|",
+            options: [], metrics: nil, views: binding
         )
-        contentView.addConstraints(
-            NSLayoutConstraint.constraints(
-                withVisualFormat: "V:|-0.0@highPriority-[v(>=height)]|",
-                options: [], metrics: metrics, views: binding
-            )
+        
+        contentViewConstraints += NSLayoutConstraint.constraints(
+            withVisualFormat: "V:|-0.0@highPriority-[v(>=height)]|",
+            options: [], metrics: metrics, views: binding
         )
     }
     
