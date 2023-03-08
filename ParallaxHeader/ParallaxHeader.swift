@@ -16,7 +16,7 @@ private let parallaxHeaderKVOContext = UnsafeMutableRawPointer.allocate(
     alignment: 1
 )
 
-public class ParallaxView: UIView {
+public class ParallaxHeaderView: UIView {
     
     fileprivate weak var parent: ParallaxHeader!
     
@@ -69,7 +69,7 @@ public class ParallaxHeader: NSObject {
                 return
             }
             
-            adjustScrollViewTopInset(top: scrollView.contentInset.top + height)
+            adjustScrollView(topInset: scrollView.contentInset.top + height)
             scrollView.addSubview(contentView)
             layoutContentView()
         }
@@ -78,8 +78,8 @@ public class ParallaxHeader: NSObject {
     /**
      The content view on top of the UIScrollView's content.
      */
-    public internal(set) lazy var contentView: ParallaxView = { [unowned self] in
-        let contentView = ParallaxView()
+    public internal(set) lazy var contentView: ParallaxHeaderView = { [unowned self] in
+        let contentView = ParallaxHeaderView()
         contentView.parent = self
         contentView.clipsToBounds = true
         return contentView
@@ -119,8 +119,7 @@ public class ParallaxHeader: NSObject {
             guard height != oldValue,
                   let scrollView = scrollView else { return }
 
-//            viewHeightConstraint?.constant = height
-            adjustScrollViewTopInset(top: scrollView.contentInset.top - oldValue + height)
+            adjustScrollView(topInset: scrollView.contentInset.top - oldValue + height)
             layoutContentView()
         }
 
@@ -160,7 +159,6 @@ public class ParallaxHeader: NSObject {
         }
     }
     
-//    fileprivate weak var viewHeightConstraint: NSLayoutConstraint?
     fileprivate var contentViewConstraints: [NSLayoutConstraint] = []
     
     // MARK: - Constraints
@@ -357,11 +355,11 @@ public class ParallaxHeader: NSObject {
         
         let minimumHeight = min(self.minimumHeight, self.height)
         var relativePosition = scrollView.contentOffset.y + scrollView.contentInset.top - height
-        if self.adjustSafeAreaInsets {
+        if adjustSafeAreaInsets {
             relativePosition += scrollView.safeAreaInsets.top
         }
         var relativeHeight = -relativePosition
-        if !self.adjustScrollViewContentInsets {
+        if !adjustScrollViewContentInsets {
             let inset = scrollView.contentInset.top - height
             relativePosition -= inset
             relativeHeight -= inset
@@ -381,27 +379,27 @@ public class ParallaxHeader: NSObject {
     
     private var disableObserving: Bool = false
     
-    private func adjustScrollViewTopInset(top: CGFloat) {
+    private func adjustScrollView(topInset: CGFloat) {
         guard let scrollView = scrollView else { return }
         
         disableObserving = true
         
-        var inset = scrollView.contentInset
+        var contentInset = scrollView.contentInset
         
         // Adjust content offset
         var offset = scrollView.contentOffset
-        offset.y += inset.top - top
+        offset.y += contentInset.top - topInset
         scrollView.contentOffset = offset
         
         // Adjust content inset
-        inset.top = top
-        scrollView.contentInset = inset
+        contentInset.top = topInset
+        scrollView.contentInset = contentInset
         
         disableObserving = false
     }
     
     
-    //MARK: - KVO
+    // MARK: - KVO
     
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard context == parallaxHeaderKVOContext,
