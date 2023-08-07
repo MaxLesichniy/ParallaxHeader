@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import SnapKit
 
 class BlurRoundIconParallaxVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -41,7 +41,7 @@ class BlurRoundIconParallaxVC: UIViewController, UITableViewDelegate, UITableVie
         tableView.parallaxHeader.mode = .centerFill
         tableView.parallaxHeader.parallaxHeaderDidScrollHandler = { parallaxHeader in
             //update alpha of blur view on top of image view
-            parallaxHeader.view.blurView.alpha = 1 - parallaxHeader.progress
+            parallaxHeader.view?.blurView.alpha = 1 - parallaxHeader.progress
         }
         
         let roundIcon = UIImageView(

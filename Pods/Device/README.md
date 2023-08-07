@@ -5,7 +5,8 @@
 [![Platform](https://img.shields.io/cocoapods/p/Device.svg?style=flat)](http://cocoapods.org/pods/Device)
 ![](https://img.shields.io/badge/Supported-iOS8%20%7C%20OSX%2010.10-4BC51D.svg?style=flat-square)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-![](https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat)
+[![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)
+![](https://img.shields.io/badge/Swift-5.0-orange.svg?style=flat)
 [![Twitter](https://img.shields.io/badge/Twitter-@LucasEkhoo-blue.svg?style=flat)](http://twitter.com/LucasEkhoo)
 
 Device detect the current  device model and screen size.
@@ -16,7 +17,7 @@ Device is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod "Device", '~> 3.2.1'
+pod "Device", '~> 3.5.0'
 ```
 
 ## Carthage
@@ -33,10 +34,22 @@ $ brew install carthage
 To integrate Device into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "Ekhoo/Device" ~> 3.2.1
+github "Ekhoo/Device" ~> 3.5.0
 ```
 
 Run `carthage update` to build the framework and drag the built `Device.framework` into your Xcode project.
+
+### Swift Package Manager
+
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler. 
+
+Once you have your Swift package set up, adding Device as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/Ekhoo/Device.git", from: "3.5.0")
+]
+```
 
 # Usage
 ## iOS
@@ -223,11 +236,21 @@ func myFunc() {
 }
 ```
 
+# Video Tutorial by Alex Nagy (@rebeloper):
+- https://www.youtube.com/watch?v=cTZcOaGgD-E
+
+[![YouTube](https://user-images.githubusercontent.com/2488011/53433240-ba33a780-39fc-11e9-820b-9e1017adce18.png)](https://www.youtube.com/watch?v=cTZcOaGgD-E)
+
 # Author
 Lucas Ortis:
 - me@lucas-ortis.com
 - [@LucasEkhoo](https://twitter.com/LucasEkhoo)
-- [Linkedin](https://fr.linkedin.com/in/lucasortis)
+- [LinkedIn](https://fr.linkedin.com/in/lucasortis)
+
+# Maintenance
+Pran Kishore:
+- kishorepran@gmail.com
+- [LinkedIn](https://www.linkedin.com/in/pran-kishore/)
 
 # License
 

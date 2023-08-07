@@ -1,7 +1,7 @@
 PODS:
-  - Device (3.2.1)
+  - Device (3.5.0)
   - RSReusable (1.1.0)
-  - SnapKit (4.2.0)
+  - SnapKit (5.6.0)
 
 DEPENDENCIES:
   - Device
@@ -9,16 +9,16 @@ DEPENDENCIES:
   - SnapKit
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - Device
     - RSReusable
     - SnapKit
 
 SPEC CHECKSUMS:
-  Device: 0738862dd8a30856b4bd9e21cb9b728873d21392
+  Device: 721760f4ab456e37b49bd541dfa42802ba9aa4c0
   RSReusable: 747c780d4ae859d3504763627e54ab8bc5439b08
-  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
 
-PODFILE CHECKSUM: 78b5c8083d4deb8b62fd453ece7c9c5eae6150a4
+PODFILE CHECKSUM: e46a8d78e97429151dab5f42986c8a4052ad4b53
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.12.1

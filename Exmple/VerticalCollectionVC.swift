@@ -44,7 +44,7 @@ class VerticalCollectionVC: UIViewController {
         collectionView.parallaxHeader.mode = .centerFill
         collectionView.parallaxHeader.parallaxHeaderDidScrollHandler = { parallaxHeader in
             //update alpha of blur view on top of image view
-            parallaxHeader.view.blurView.alpha = 1 - parallaxHeader.progress
+            parallaxHeader.view?.blurView.alpha = 1 - parallaxHeader.progress
         }
         
         // Label for vibrant text
