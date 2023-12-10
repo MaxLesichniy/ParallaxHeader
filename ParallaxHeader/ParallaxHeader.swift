@@ -320,7 +320,7 @@ public class ParallaxHeader: NSObject {
         )
         
         contentViewConstraints += NSLayoutConstraint.constraints(
-            withVisualFormat: "V:[v(==height)]|", options: [], metrics: metrics, views: binding
+            withVisualFormat: "V:[v(==height@250)]|", options: [], metrics: metrics, views: binding
         )
     }
     
